@@ -30,7 +30,7 @@
         nav a { margin-left: 30px; text-decoration: none; color: #ffffff; font-weight: 500; transition: 0.3s; }
         nav a:hover { color: #E2D825; }
         main { 
-            margin-top: 0; 
+            margin-top: 80px; /* Increased margin to avoid overlap with fixed header */
             width: 100%; 
             scroll-snap-type: y mandatory; 
         }
@@ -68,6 +68,41 @@
         audio, iframe { width: 100%; border-radius: 15px; }
         a { color: #E2D825; transition: 0.3s; }
         a:hover { color: #ffffff; }
+
+        /* Video player responsiveness */
+        .iframe-container {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        iframe {
+            width: 30%;
+            height: 300px;
+            border-radius: 15px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            header { padding: 15px 20px; flex-direction: column; align-items: flex-start; }
+            nav a { margin-left: 15px; margin-bottom: 10px; }
+            iframe {
+                width: 100%;
+                height: 200px;
+                margin-bottom: 15px;
+            }
+            section { padding: 60px 20px; }
+            main { margin-top: 120px; }
+        }
+
+        @media (max-width: 480px) {
+            header { padding: 10px 15px; }
+            nav a { font-size: 14px; }
+            section { padding: 40px 10px; }
+            .iframe-container { flex-direction: column; }
+            iframe { width: 100%; }
+        }
     </style>
 </head>
 <body>
@@ -124,25 +159,6 @@
             </div>
         </div>
     </section>
-
-    <style>
-        .video-player {
-            margin-top: 30px;
-        }
-
-        .iframe-container {
-            display: flex;
-            justify-content: space-between;
-            gap: 20px;
-            flex-wrap: wrap;
-        }
-
-        iframe {
-            width: 30%;
-            height: 300px;
-            border-radius: 15px;
-        }
-    </style>
 
     <section id="contact" style="background-image: url('background-contact.jpg');">
         <h2>Contact</h2>
@@ -205,23 +221,17 @@
         }, 1000);
     }
 
-    function handleFade() {
-        const triggerBottom = window.innerHeight / 2;
-
-        sections.forEach(section => {
-            const boxTop = section.getBoundingClientRect().top;
-            const boxBottom = section.getBoundingClientRect().bottom;
-
-            if (boxTop < triggerBottom && boxBottom > triggerBottom) {
-                section.classList.add('active');
-            } else {
-                section.classList.remove('active');
+    function handleIntersection(entries) {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('active');
             }
         });
     }
 
-    window.addEventListener('scroll', handleFade);
-    window.addEventListener('load', handleFade);
+    const observer = new IntersectionObserver(handleIntersection, { threshold: 0.5 });
+    sections.forEach(section => observer.observe(section));
 </script>
+
 </body>
 </html>
